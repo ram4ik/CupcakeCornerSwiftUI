@@ -19,18 +19,37 @@ struct Result: Codable {
 
 struct ContentView: View {
     @State private var results = [Result]()
+    @State private var counter = 0
     
     var body: some View {
-        List(results, id: \.trackId) { item in
-            VStack(alignment: .leading) {
-                Text(item.trackName)
-                    .font(.headline)
-                
-                Text(item.collectionName)
+        NavigationStack {
+            List(results, id: \.trackId) { item in
+                NavigationLink {
+                    VStack(alignment: .leading) {
+                        Text(item.trackName)
+                            .font(.headline)
+                            
+                        Text(item.collectionName)
+                    }
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(item.trackName)
+                            .font(.headline)
+                        
+                        Text(item.collectionName)
+                    }
+                }
             }
-        }
-        .task {
-            await loadData()
+            .task {
+                await loadData()
+            }
+            .navigationTitle("Taylor Swift Songs")
+            .toolbar {
+                Button("Tap Count: \(counter)") {
+                    counter += 1
+                }
+                .sensoryFeedback(.increase, trigger: counter)
+            }
         }
     }
     
